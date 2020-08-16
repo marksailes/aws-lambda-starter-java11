@@ -1,5 +1,12 @@
 # aws-lambda-starter-java11
 
+Cold Start Times:
+net.sailes lambda-structured-logging 867ms 3gb
+net.sailes lambda-structured-logging 2187ms 1gb
+
+io.symphonia lambda-logging - 1048ms 3gb
+io.symphonia lambda-logging - 2394ms 1gb
+
 Architecture Decision Record (ADR):
 - Leverage AWS Lambda startup CPU boost: initialize everything in static blocks & constructor
 

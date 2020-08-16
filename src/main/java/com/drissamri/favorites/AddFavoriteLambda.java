@@ -10,14 +10,14 @@ import com.drissamri.favorites.model.Favorite;
 import com.drissamri.favorites.service.FavoriteService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.sailes.lambda.logger.Logger;
+import net.sailes.lambda.logger.LoggerFactory;
 import software.amazon.awssdk.http.HttpStatusCode;
 
 import java.util.Map;
 
 public class AddFavoriteLambda implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2HTTPResponse> {
-    private static Logger LOG = LoggerFactory.getLogger(AddFavoriteLambda.class);
+    private static Logger LOG = LoggerFactory.getLogger();
     private ObjectMapper objectMapper;
     private FavoriteService favoriteService;
 
@@ -32,8 +32,9 @@ public class AddFavoriteLambda implements RequestHandler<APIGatewayV2HTTPEvent, 
 
     @Override
     public APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent input, Context context) {
+        LOG.addContextKeys(context);
         Favorite savedFavorite = favoriteService.add(parseRequest(input));
-        LOG.info("Favorite created: {}", savedFavorite);
+        LOG.info("Favorite created: " + savedFavorite.toString());
 
         APIGatewayV2HTTPResponse response;
         try {
@@ -42,7 +43,7 @@ public class AddFavoriteLambda implements RequestHandler<APIGatewayV2HTTPEvent, 
                     .withBody(objectMapper.writeValueAsString(savedFavorite))
                     .build();
         } catch (Exception ex) {
-            LOG.error("Exception: {}", ex.getMessage());
+            LOG.info("Exception: " + ex.getMessage());
             response = createErrorResponse();
         }
 
